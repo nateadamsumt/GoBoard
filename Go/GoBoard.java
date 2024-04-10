@@ -1,11 +1,16 @@
 package Go;
+
+// Import Statements
 import java.util.Scanner;
 
+// Declaring the class
 public class GoBoard {
-    static String[][] board = new String[10][10]; // Declare as static
+    // Declaring the class wide items
+    static String[][] board = new String[10][10];
     static int whitePoints = 0;
     static int blackPoints = 0;
 
+    // Function to print the Go Board
     public static void printBoard() {
         System.out.println(" 1 2 3 4 5 6 7 8 9");
         for (int i = 0; i < board.length - 1; i++) {
@@ -25,6 +30,7 @@ public class GoBoard {
         }
     }
 
+    //function to check if a piece is captured
     public static boolean checkForCaptures(int col, int row, String currentPlayerPiece) {
 
         boolean captured = false;
@@ -48,6 +54,7 @@ public class GoBoard {
         return captured;
     }
 
+    // Function to see if a Piece has any Liberties
     public static boolean canBreathe(int col, int row) {
 
         if (col > 0 && board[col - 1][row] == null) {
@@ -64,15 +71,19 @@ public class GoBoard {
         }
         return false;
     }
+
+   // Function to score points
     public static void updatePoints(String currentPlayerPiece){
 
-        if (currentPlayerPiece.equals("◯ ")){
-            blackPoints ++;
-        }
-        if  (currentPlayerPiece.equals("◯ ")){
-            whitePoints ++;
-        }
+    if (currentPlayerPiece.equals("◯ ") || currentPlayerPiece.equals("◯")) {
+        blackPoints++;
+
+    } else if (currentPlayerPiece.equals("● ") || currentPlayerPiece.equals("●")) {
+        whitePoints++;
     }
+}
+
+    // Main Function to use these previous functions
     public static void main(String[] args) {
 
         boolean cont = true;
@@ -84,18 +95,19 @@ public class GoBoard {
         int moveX;
         int moveY;
 
-
+        //while look to continuously play the game
         while (cont) {
-            // Print the board
+
             printBoard();
 
             System.out.println("Black Points: " + blackPoints);
             System.out.println("White Points: " + whitePoints);
 
-            // Print whose turn it is
+            System.out.println("Would you like to continue to play? Q to quit.");
+            String quit = scn.nextLine();
+
             System.out.println("\n" + ((player_turn) ? "Black" : "White") + "'s turn\n\n");
 
-            // Prompt for player's move
             System.out.println("What row would you like to place your piece at " + ((player_turn) ? "Black" : "White") + " (or 0 to pass) ?");
             moveX = scn.nextInt();
 
@@ -110,22 +122,25 @@ public class GoBoard {
                 System.out.println();
                 continue;
             } else {
-                // Check if the position is already occupied
+
                 if (board[moveY - 1][moveX - 1] != null) {
                     System.out.println("There is already a piece there, please choose another space");
                     System.out.println();
                     continue;
                 }
-                // Place the piece on the board
+
                 board[moveY - 1][moveX - 1] = ((player_turn) ? "◯ " : "● ");
 
-                // Check for captures
                 if (checkForCaptures(moveX - 1, moveY - 1, ((player_turn) ? "● " : "◯ "))) {
                     System.out.println("Captured opponent's piece!");
                 }
             }
 
             player_turn = !player_turn;
+
+            if (quit.equalsIgnoreCase("q")) {
+                break;
+            }
         }
     }
 }
@@ -134,7 +149,10 @@ public class GoBoard {
 //" ● ";
 
 //to do
-/*
- * basic scoring piece
+/* 
+ * capture of multiple pieces
+ * scoring those captured pieces
+ * quit statement
+ * breathe for same kind of piece
  * 
  */
