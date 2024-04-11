@@ -10,6 +10,9 @@ public class GoBoard {
     static int whitePoints = 0;
     static int blackPoints = 0;
 
+    static boolean cont = true;
+    static boolean player_turn = true;
+
     // Function to print the Go Board
     public static void printBoard() {
         System.out.println(" 1 2 3 4 5 6 7 8 9");
@@ -30,6 +33,24 @@ public class GoBoard {
         }
     }
 
+        // Function to see if a Piece has any Liberties
+        public static boolean canBreathe(int col, int row) {
+
+            if (col > 0 && board[col - 1][row] == null) {
+                return true;
+            }
+            if (col < board.length - 1 && board[col + 1][row] == null) {
+                return true;
+            }
+            if (row > 0 && board[col][row - 1] == null) {
+                return true;
+            }
+            if (row < board[col].length - 1 && board[col][row + 1] == null) {
+                return true;
+            }
+            return false;
+        }
+
     //function to check if a piece is captured
     public static boolean checkForCaptures(int col, int row, String currentPlayerPiece) {
 
@@ -37,59 +58,44 @@ public class GoBoard {
 
         if (col > 0 && board[col - 1][row] != null && !canBreathe(col - 1, row)) {
             captured = true;
+            updatePoints(board [col-1][row]);
             board[col - 1][row] = null;
         }
         if (col < board.length - 1 && board[col + 1][row] != null && !canBreathe(col + 1, row)) {
             captured = true;
+            updatePoints(board [col+1][row]);
             board[col + 1][row] = null;
         }
         if (row > 0 && board[col][row - 1] != null && !canBreathe(col, row - 1)) {
             captured = true;
+            updatePoints(board [col][row-1]);
             board[col][row - 1] = null;
         }
         if (row < board[col].length - 1 && board[col][row + 1] != null && !canBreathe(col, row + 1)) {
             captured = true;
+            updatePoints(board [col][row+1]);
             board[col][row + 1] = null;
         }
         return captured;
-    }
-
-    // Function to see if a Piece has any Liberties
-    public static boolean canBreathe(int col, int row) {
-
-        if (col > 0 && board[col - 1][row] == null) {
-            return true;
-        }
-        if (col < board.length - 1 && board[col + 1][row] == null) {
-            return true;
-        }
-        if (row > 0 && board[col][row - 1] == null) {
-            return true;
-        }
-        if (row < board[col].length - 1 && board[col][row + 1] == null) {
-            return true;
-        }
-        return false;
     }
 
    // Function to score points
     public static void updatePoints(String currentPlayerPiece){
 
     if (currentPlayerPiece.equals("◯ ") || currentPlayerPiece.equals("◯")) {
-        blackPoints++;
+        whitePoints++;
 
     } else if (currentPlayerPiece.equals("● ") || currentPlayerPiece.equals("●")) {
-        whitePoints++;
+        blackPoints++;
     }
 }
 
     // Main Function to use these previous functions
     public static void main(String[] args) {
 
-        boolean cont = true;
-        boolean player_turn = true;
-
         Scanner scn = new Scanner(System.in);
+
+        int passCount = 0;
 
         int max_length = board.length;
         int moveX;
@@ -103,9 +109,6 @@ public class GoBoard {
             System.out.println("Black Points: " + blackPoints);
             System.out.println("White Points: " + whitePoints);
 
-            System.out.println("Would you like to continue to play? Q to quit.");
-            String quit = scn.nextLine();
-
             System.out.println("\n" + ((player_turn) ? "Black" : "White") + "'s turn\n\n");
 
             System.out.println("What row would you like to place your piece at " + ((player_turn) ? "Black" : "White") + " (or 0 to pass) ?");
@@ -116,6 +119,8 @@ public class GoBoard {
 
             if (moveY == 0 || moveX == 0) {
                 player_turn = !player_turn;
+                passCount += 1;
+                System.out.print(passCount);
                 continue;
             } else if (moveY > max_length || moveY < 0 || moveX > max_length || moveX < 0) {
                 System.out.println("Out of Bounds");
@@ -134,13 +139,12 @@ public class GoBoard {
                 if (checkForCaptures(moveX - 1, moveY - 1, ((player_turn) ? "● " : "◯ "))) {
                     System.out.println("Captured opponent's piece!");
                 }
+            System.out.println("Would you like to continue to play? Q to quit.");
             }
-
+            if (passCount == 2) {
+                cont = false;
+            }
             player_turn = !player_turn;
-
-            if (quit.equalsIgnoreCase("q")) {
-                break;
-            }
         }
     }
 }
@@ -150,9 +154,10 @@ public class GoBoard {
 
 //to do
 /* 
- * capture of multiple pieces
- * scoring those captured pieces
- * quit statement
- * breathe for same kind of piece
+ * 
+ * make detect color function
+ * make it so when peice is seen they can be added their liberties
+ * call the point score function in the capture function
+ * cry from there
  * 
  */
