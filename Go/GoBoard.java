@@ -102,7 +102,7 @@ public class GoBoard {
         int moveY;
 
         //while look to continuously play the game
-        while (cont) {
+        while (passCount != 2) {
 
             printBoard();
 
@@ -140,9 +140,6 @@ public class GoBoard {
                     System.out.println("Captured opponent's piece!");
                 }
             System.out.println("Would you like to continue to play? Q to quit.");
-            }
-            if (passCount == 2) {
-                cont = false;
             }
             player_turn = !player_turn;
         }
